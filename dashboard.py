@@ -148,10 +148,10 @@ st.pyplot(plt)
 state_name = display_map(all_df)
 st.write(f'Provinsi yang dipilih: {state_name}')
 
-print(state_name)
+st.write(state_name)
 
 datas = all_df.loc[all_df['PROVINSI'] == state_name, 'Jumlah Sekolah SD']
-print(datas)
+st.write(datas)
 donut_chart_less = make_donut(200, 'Testo', 'red')
 
 migrations_col = st.columns((0.2, 1, 0.2))
