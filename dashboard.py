@@ -16,8 +16,7 @@ from babel.numbers import format_currency
 sns.set(style='dark')
 
 def create_filter_prov_df(df):
-    filter_prov = df[df['PROVINSI'] == df['KAB_KOTA']]
-    filter_prov = filter_prov.sort_values(by="PAGU", ascending=True)
+    filter_prov = df.sort_values(by="PAGU", ascending=True)
     return filter_prov
 
 def make_choropleth(input_df, input_id, input_column, input_color_theme):
