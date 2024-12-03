@@ -11,6 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import plotly.express as px
 from babel.numbers import format_currency
 sns.set(style='dark')
 
@@ -18,6 +19,33 @@ def create_filter_prov_df(df):
     filter_prov = df[df['PROVINSI'] == df['KAB_KOTA']]
     filter_prov = filter_prov.sort_values(by="PAGU", ascending=True)
     return filter_prov
+
+def make_choropleth(input_df, input_id, input_column, input_color_theme):
+    # File geojson provinsi Indonesia
+    geojson_url = 'https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/indonesia-provinces.geojson'
+    
+    # Membuat choropleth map menggunakan Plotly Express
+    choropleth = px.choropleth(input_df, 
+                                geojson=geojson_url, 
+                                locations=input_id, 
+                                color=input_column, 
+                                color_continuous_scale=input_color_theme,
+                                range_color=(0, input_df[input_column].max()),
+                                scope="asia",
+                                labels={input_column: input_column}
+                               )
+
+    # Memperbarui layout untuk peta
+    choropleth.update_geos(fitbounds="locations", visible=False)
+    choropleth.update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        margin=dict(l=0, r=0, t=0, b=0),
+        height=350
+    )
+    
+    return choropleth
 
 # menyiapkan data all_data
 all_df = pd.read_csv('data_set_2023.csv')
@@ -52,3 +80,7 @@ plt.xlim(left=0)
 plt.tight_layout()
 
 st.pyplot(plt)
+
+fig = make_choropleth(all_df, 'PROVINSI', 'Jumlah Sekolah SD', 'Viridis')
+fig.show()
+st.pyplot(fig)
