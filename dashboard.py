@@ -149,7 +149,7 @@ state_name = display_map(all_df)
 st.write(f'Provinsi yang dipilih: {state_name}')
 
 datas = all_df.loc[all_df['PROVINSI'] == state_name, 'Jumlah Sekolah SD']
-donut_chart_less = make_donut(, 'Testo', 'red')
+donut_chart_less = make_donut(datas, 'Testo', 'red')
 
     migrations_col = st.columns((0.2, 1, 0.2))
     with migrations_col[1]:
