@@ -70,7 +70,7 @@ with col2:
     total_pagu_formatted = f"{int(total_pagu / 1e12)} T"
     st.metric("Total PAGU", value=total_pagu_formatted)
 
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(10, 8))
 plt.barh(filter_prov_df['PROVINSI'], filter_prov_df['PAGU'].astype(str).apply(lambda x: x[:-12]),   color=[ "#78B3CE" if pagu == filter_prov_df['PAGU'].max() else "#C9E6F0" for pagu in filter_prov_df['PAGU']])
 plt.xlabel('PAGU (Triliun)')
 plt.ylabel('Provinsi')
@@ -81,5 +81,4 @@ plt.tight_layout()
 st.pyplot(plt)
 
 fig = make_choropleth(all_df, 'PROVINSI', 'Jumlah Sekolah SD', 'Viridis')
-fig.show()
 st.pyplot(fig)
