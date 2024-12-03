@@ -22,6 +22,39 @@ def create_filter_prov_df(df):
     filter_prov = df.sort_values(by="PAGU", ascending=True)
     return filter_prov
 
+def make_choropleth(input_df, input_id, input_column, input_color_theme):
+    # Membaca file GeoJSON lokal
+    with open('indonesia-edit.geojson') as f:
+        geojson_data = json.load(f)
+    
+    # Pastikan Anda memeriksa apakah nama provinsi dalam geojson dan df cocok
+    input_df[input_id] = input_df[input_id].str.lower()  # pastikan data df juga lowercase
+     # Check which provinces in df are not in the GeoJSON
+    missing_provs = input_df[~input_df[input_id].isin([feature['properties']['state'].lower() for feature in geojson_data['features']])]
+    print("Missing Provinces:", missing_provs)
+    
+    # Membuat choropleth map menggunakan Plotly Express
+    choropleth = px.choropleth(input_df, 
+                                geojson=geojson_data,  # Menggunakan data GeoJSON lokal
+                                locations=input_id, 
+                                color=input_column, 
+                                color_continuous_scale=input_color_theme,
+                                range_color=(0, input_df[input_column].max()),
+                                scope="asia",
+                                labels={input_column: input_column}
+                               )
+    # Memperbarui layout untuk peta
+    choropleth.update_geos(fitbounds="locations", visible=False)
+    choropleth.update_layout(
+        template='plotly_dark',
+        plot_bgcolor='rgba(255, 255, 255, 0)',  # Latar belakang peta yang transparan
+        paper_bgcolor='rgba(255, 255, 255, 0)',  # Latar belakang kertas yang transparan
+        margin=dict(l=0, r=0, t=0, b=0),
+        height=350
+    )
+    
+    return choropleth
+
 def display_map(df):
     # Membuat peta dengan pusat Indonesia
     map = folium.Map(location=[-6.1751, 106.8650], zoom_start=5, scrollWheelZoom=False, tiles='CartoDB positron')
@@ -99,12 +132,16 @@ plt.tight_layout()
 
 st.pyplot(plt)
 
-# Membaca GeoJSON dari file lokal
+all_df['PROVINSI'] = all_df['PROVINSI'].str.lower()
+fig = make_choropleth(all_df, 'PROVINSI', 'Jumlah Sekolah SD', 'Viridis')
+st.plotly_chart(fig)
+# Membaca file GeoJSON
 geojson_url = 'indonesia-edit.geojson'
-
 # Buat peta pusat Indonesia
 m = folium.Map(location=[-6.1751, 106.8650], zoom_start=5)
-
+# Pastikan kolom 'PROVINSI' di all_df sesuai dengan nama di GeoJSON
+# Menormalisasi data di DataFrame dan GeoJSON (jika perlu)
+all_df['PROVINSI'] = all_df['PROVINSI'].str.lower()
 # Tambahkan layer GeoJSON
 folium.Choropleth(
     geo_data=geojson_url,
@@ -116,6 +153,8 @@ folium.Choropleth(
     line_opacity=0.2,
     legend_name="Jumlah Sekolah SD"
 ).add_to(m)
-
+# Menyimpan peta ke file HTML
+st.components.v1.html(m._repr_html_(), width=700, height=500)
+# Menampilkan peta
 state_name = display_map(all_df)
 st.write(f'Provinsi yang dipilih: {state_name}')
