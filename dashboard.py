@@ -20,12 +20,13 @@ def create_filter_prov_df(df):
     return filter_prov
 
 def make_choropleth(input_df, input_id, input_column, input_color_theme):
-    # File geojson provinsi Indonesia
-    geojson_url = 'https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/indonesia-provinces.geojson'
+    # Membaca file GeoJSON lokal
+    with open('id.json') as f:
+        geojson_data = json.load(f)
     
     # Membuat choropleth map menggunakan Plotly Express
     choropleth = px.choropleth(input_df, 
-                                geojson=geojson_url, 
+                                geojson=geojson_data,  # Menggunakan data GeoJSON lokal
                                 locations=input_id, 
                                 color=input_column, 
                                 color_continuous_scale=input_color_theme,
