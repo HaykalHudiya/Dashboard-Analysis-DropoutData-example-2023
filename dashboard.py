@@ -99,5 +99,5 @@ plt.tight_layout()
 
 st.pyplot(plt)
 
-# Menampilkan nama provinsi yang dipilih pengguna di peta
+state_name = display_map(all_df)
 st.write(f'Provinsi yang dipilih: {state_name}')
