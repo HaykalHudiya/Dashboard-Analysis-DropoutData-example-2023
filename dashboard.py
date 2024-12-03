@@ -40,7 +40,8 @@ with col1:
 
 with col2:
     total_pagu = filter_prov_df['PAGU'].sum()
-    st.metric("Total PAGU", value=f"Rp {total_pagu:,.0f}")
+    total_pagu_formatted = f"{total_pagu / 1e12:.1f} T" 
+    st.metric("Total PAGU", value=total_pagu_formatted)
 
 plt.figure(figsize=(10, 6))
 plt.barh(filter_prov_df['PROVINSI'], filter_prov_df['PAGU'].astype(str).apply(lambda x: x[:-12]),   color=[ "#78B3CE" if pagu == filter_prov_df['PAGU'].max() else "#C9E6F0" for pagu in filter_prov_df['PAGU']])
