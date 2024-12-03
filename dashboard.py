@@ -64,7 +64,7 @@ def display_map(df):
         state_name = st_map['last_active_drawing']['properties']['state']
     
     return state_name
-saya memakai koding ini berhasil tapi warna nya hitam
+
 def display_map(df):
     # Create a map with the center of Indonesia
     map = folium.Map(location=[-6.1751, 106.8650], zoom_start=5, scrollWheelZoom=False, tiles='CartoDB positron')
