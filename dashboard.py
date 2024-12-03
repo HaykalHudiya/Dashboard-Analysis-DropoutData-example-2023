@@ -24,6 +24,9 @@ def create_filter_prov_df(df):
     return filter_prov
 
 def display_map(df):
+    # Pastikan kolom 'PROVINSI' dalam format yang sesuai dengan GeoJSON
+    df['PROVINSI'] = df['PROVINSI'].str.lower()
+
     # Membuat peta pusat Indonesia
     map = folium.Map(location=[-6.1751, 106.8650], zoom_start=5, scrollWheelZoom=False, tiles='CartoDB positron')
     
