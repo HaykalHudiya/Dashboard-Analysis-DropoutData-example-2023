@@ -17,7 +17,7 @@ import altair as alt
 import plotly.express as px
 from streamlit_folium import st_folium
 from babel.numbers import format_currency
-# sns.set(style='dark')
+sns.set(style='dark')
 
 def create_filter_prov_df(df):
     filter_prov = df.sort_values(by="PAGU", ascending=True)
