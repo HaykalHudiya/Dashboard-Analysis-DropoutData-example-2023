@@ -23,37 +23,83 @@ def create_filter_prov_df(df):
     return filter_prov
 
 def display_map(df):
-    # Pastikan kolom 'PROVINSI' dalam format yang sesuai dengan GeoJSON
-    df['PROVINSI'] = df['PROVINSI'].str.lower()
-
-    # Membuat peta pusat Indonesia
+    # Membuat peta dengan pusat Indonesia
     map = folium.Map(location=[-6.1751, 106.8650], zoom_start=5, scrollWheelZoom=False, tiles='CartoDB positron')
     
-    # Buat choropleth dengan warna berdasarkan jumlah sekolah SD
+    # Membaca GeoJSON dari file lokal
+    geojson_url = 'indonesia-edit.geojson'
+
+    # Membuat Choropleth Map untuk peta Indonesia
     choropleth = folium.Choropleth(
-        geo_data='indonesia-edit.geojson',  # Pastikan file GeoJSON sesuai
+        geo_data=geojson_url,
         data=df,
-        columns=['PROVINSI', 'Jumlah Sekolah SD'],  # Kolom yang digunakan untuk choropleth
-        key_on='feature.properties.state',  # Kolom yang digunakan untuk matching
-        fill_color='RdYlBu',  # Warna: merah untuk tinggi, biru untuk rendah
+        columns=['PROVINSI', 'Jumlah Sekolah SD'],  # Menyesuaikan dengan kolom di DataFrame
+        key_on='feature.properties.state',  # Menyesuaikan dengan properti GeoJSON 'state'
+        fill_color='YlGnBu',
         fill_opacity=0.7,
         line_opacity=0.2,
-        legend_name="Jumlah Sekolah SD",
-        highlight=True
-    ).add_to(map)
+        legend_name='Jumlah Sekolah SD'
+    )
+    choropleth.geojson.add_to(map)
 
-    # Menambahkan tooltip untuk menampilkan nama provinsi dan jumlah sekolah
+    # Menambahkan informasi tambahan pada setiap provinsi di GeoJSON
+    df_indexed = df.set_index('PROVINSI')  # Indeks menggunakan 'PROVINSI' untuk pencocokan
+    
+    for feature in choropleth.geojson.data['features']:
+        state_name = feature['properties']['state'].lower()  # Nama provinsi di GeoJSON
+        if state_name in df_indexed.index:
+            feature['properties']['population'] = 'Jumlah Sekolah SD: ' + str(df_indexed.loc[state_name, 'Jumlah Sekolah SD'])
+
+    # Menambahkan tooltip pada GeoJSON untuk menampilkan informasi yang relevan
     choropleth.geojson.add_child(
-        folium.features.GeoJsonTooltip(['name', 'Jumlah Sekolah SD'], labels=False)
+        folium.features.GeoJsonTooltip(['state', 'population'], labels=False)  # Menggunakan 'state' dan 'population' sebagai tooltip
     )
 
-    # Menampilkan peta dalam Streamlit
+    # Menampilkan peta di Streamlit
     st_map = st_folium(map, width=700, height=450)
-    
-    # Mengambil nama provinsi yang dipilih pengguna
+
+    # Menangani interaksi dengan peta, seperti klik pada provinsi
     state_name = ''
-    if st_map['last_active_drawing']:
-        state_name = st_map['last_active_drawing']['properties']['name']
+    if st_map.get('last_active_drawing'):
+        state_name = st_map['last_active_drawing']['properties']['state']
+    
+    return state_name
+saya memakai koding ini berhasil tapi warna nya hitam
+def display_map(df):
+    # Create a map with the center of Indonesia
+    map = folium.Map(location=[-6.1751, 106.8650], zoom_start=5, scrollWheelZoom=False, tiles='CartoDB positron')
+    
+    # Read GeoJSON from a local file
+    geojson_url = 'indonesia-edit.geojson'
+    # Create a Choropleth Map for the Indonesian map
+    choropleth = folium.Choropleth(
+        geo_data=geojson_url,
+        data=df,
+        columns=['PROVINCE', 'Number of Elementary Schools'], # Adjust to columns in DataFrame
+        key_on='feature.properties.state', # Matches GeoJSON property 'state'
+        fill_color='YlGnBu',
+        fill_opacity=0.7,
+        line_opacity=0.2,
+        legend_name='Number of Elementary Schools'
+    )
+    choropleth.geojson.add_to(map)
+    # Added additional information on each province in GeoJSON
+    df_indexed = df.set_index('PROVINCE') # Index uses 'PROVINCE' for matching
+    
+    for feature in choropleth.geojson.data['features']:
+        state_name = feature['properties']['state'].lower() # Province name in GeoJSON
+        if state_name in df_indexed.index:
+            feature['properties']['population'] = 'Number of Elementary Schools: ' + str(df_indexed.loc[state_name, 'Number of Elementary Schools'])
+    # Added a tooltip to GeoJSON to display relevant information
+    choropleth.geojson.add_child(
+        folium.features.GeoJsonTooltip(['state', 'population'], labels=False) # Use 'state' and 'population' as tooltips
+    )
+    # Displays the map in Streamlit
+    st_map = st_folium(map, width=700, height=450)
+    # Handle interactions with the map, such as clicking on provinces
+    state_name = ''
+    if st_map.get('last_active_drawing'):
+        state_name = st_map['last_active_drawing']['properties']['state']
     
     return state_name
 
