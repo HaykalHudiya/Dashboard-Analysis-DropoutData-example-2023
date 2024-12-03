@@ -99,5 +99,23 @@ plt.tight_layout()
 
 st.pyplot(plt)
 
+# Membaca GeoJSON dari file lokal
+geojson_url = 'indonesia-edit.geojson'
+
+# Buat peta pusat Indonesia
+m = folium.Map(location=[-6.1751, 106.8650], zoom_start=5)
+
+# Tambahkan layer GeoJSON
+folium.Choropleth(
+    geo_data=geojson_url,
+    data=all_df,
+    columns=['PROVINSI', 'Jumlah Sekolah SD'],
+    key_on="feature.properties.state",  # Pastikan 'state' sesuai dengan properti GeoJSON
+    fill_color="YlGnBu",
+    fill_opacity=0.7,
+    line_opacity=0.2,
+    legend_name="Jumlah Sekolah SD"
+).add_to(m)
+
 state_name = display_map(all_df)
 st.write(f'Provinsi yang dipilih: {state_name}')
