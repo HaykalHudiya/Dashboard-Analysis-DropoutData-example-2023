@@ -81,6 +81,6 @@ plt.xlim(left=0)
 plt.tight_layout()
 
 st.pyplot(plt)
-
+all_df['PROVINSI'] = all_df['PROVINSI'].str.lower()
 fig = make_choropleth(all_df, 'PROVINSI', 'Jumlah Sekolah SD', 'Viridis')
 st.plotly_chart(fig)
