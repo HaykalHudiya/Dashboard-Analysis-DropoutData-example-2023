@@ -14,6 +14,7 @@ import streamlit as st
 import plotly.express as px
 import json
 import folium
+from streamlit_folium import st_folium
 from babel.numbers import format_currency
 # sns.set(style='dark')
 
@@ -55,6 +56,49 @@ def make_choropleth(input_df, input_id, input_column, input_color_theme):
     )
     
     return choropleth
+
+def display_map(df):
+    # Membuat peta dengan pusat Indonesia
+    map = folium.Map(location=[-6.1751, 106.8650], zoom_start=5, scrollWheelZoom=False, tiles='CartoDB positron')
+    
+    # Membaca GeoJSON dari file lokal
+    geojson_url = 'indonesia-edit.geojson'
+
+    # Membuat Choropleth Map untuk peta Indonesia
+    choropleth = folium.Choropleth(
+        geo_data=geojson_url,
+        data=df,
+        columns=['PROVINSI', 'Jumlah Sekolah SD'],  # Menyesuaikan dengan kolom di DataFrame
+        key_on='feature.properties.state',  # Menyesuaikan dengan properti GeoJSON 'state'
+        fill_color='YlGnBu',
+        fill_opacity=0.7,
+        line_opacity=0.2,
+        legend_name='Jumlah Sekolah SD'
+    )
+    choropleth.geojson.add_to(map)
+
+    # Menambahkan informasi tambahan pada setiap provinsi di GeoJSON
+    df_indexed = df.set_index('PROVINSI')  # Indeks menggunakan 'PROVINSI' untuk pencocokan
+    
+    for feature in choropleth.geojson.data['features']:
+        state_name = feature['properties']['state'].lower()  # Nama provinsi di GeoJSON
+        if state_name in df_indexed.index:
+            feature['properties']['population'] = 'Jumlah Sekolah SD: ' + str(df_indexed.loc[state_name, 'Jumlah Sekolah SD'])
+
+    # Menambahkan tooltip pada GeoJSON untuk menampilkan informasi yang relevan
+    choropleth.geojson.add_child(
+        folium.features.GeoJsonTooltip(['state', 'population'], labels=False)  # Menggunakan 'state' dan 'population' sebagai tooltip
+    )
+
+    # Menampilkan peta di Streamlit
+    st_map = st_folium(map, width=700, height=450)
+
+    # Menangani interaksi dengan peta, seperti klik pada provinsi
+    state_name = ''
+    if st_map.get('last_active_drawing'):
+        state_name = st_map['last_active_drawing']['properties']['state']
+    
+    return state_name
 
 # menyiapkan data all_data
 all_df = pd.read_csv('data_set_2023.csv')
@@ -116,3 +160,9 @@ folium.Choropleth(
 
 # Menyimpan peta ke file HTML
 st.components.v1.html(m._repr_html_(), width=700, height=500)
+
+# Menampilkan peta
+state_name = display_map(all_df)
+
+# Menampilkan nama provinsi yang dipilih pengguna di peta
+st.write(f'Provinsi yang dipilih: {state_name}')
