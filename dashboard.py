@@ -15,6 +15,7 @@ import plotly.express as px
 import json
 from babel.numbers import format_currency
 # sns.set(style='dark')
+<div style="background-color: #f0f8ff; padding: 20px; border-radius: 10px;">
 
 def create_filter_prov_df(df):
     filter_prov = df.sort_values(by="PAGU", ascending=True)
