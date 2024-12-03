@@ -22,7 +22,7 @@ def create_filter_prov_df(df):
 
 def make_choropleth(input_df, input_id, input_column, input_color_theme):
     # Membaca file GeoJSON lokal
-    with open('indonesia-en.geojson') as f:
+    with open('indonesia-edit.geojson') as f:
         geojson_data = json.load(f)
     
     # Membuat choropleth map menggunakan Plotly Express
