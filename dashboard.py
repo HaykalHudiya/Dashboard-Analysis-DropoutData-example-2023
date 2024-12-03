@@ -115,4 +115,4 @@ folium.Choropleth(
 ).add_to(m)
 
 # Menyimpan peta ke file HTML
-m.save('index_map.html')
+st.components.v1.html(m._repr_html_(), width=700, height=500)
