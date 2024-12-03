@@ -7,8 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1xiulwUH6Kd6KV8sb3s_OTqOl3HvUqXwy
 """
 
-!pip install streamlit babel
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
