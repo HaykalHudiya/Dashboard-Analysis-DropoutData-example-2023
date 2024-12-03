@@ -39,7 +39,7 @@ def make_choropleth(input_df, input_id, input_column, input_color_theme):
     # Memperbarui layout untuk peta
     choropleth.update_geos(fitbounds="locations", visible=False)
     choropleth.update_layout(
-    template='plotly_light',
+    template='plotly_dark',
     plot_bgcolor='rgba(255, 255, 255, 0)',  # Latar belakang peta yang transparan
     paper_bgcolor='rgba(255, 255, 255, 0)',  # Latar belakang kertas yang transparan
     margin=dict(l=0, r=0, t=0, b=0),
