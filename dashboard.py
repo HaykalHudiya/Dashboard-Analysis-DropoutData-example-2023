@@ -14,7 +14,7 @@ import streamlit as st
 import plotly.express as px
 import json
 from babel.numbers import format_currency
-sns.set(style='dark')
+sns.set(style='light')
 
 def create_filter_prov_df(df):
     filter_prov = df.sort_values(by="PAGU", ascending=True)
