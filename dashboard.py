@@ -25,6 +25,13 @@ def make_choropleth(input_df, input_id, input_column, input_color_theme):
     with open('indonesia-edit.geojson') as f:
         geojson_data = json.load(f)
     
+    # Pastikan Anda memeriksa apakah nama provinsi dalam geojson dan df cocok
+    input_df[input_id] = input_df[input_id].str.lower()  # pastikan data df juga lowercase
+
+     # Check which provinces in df are not in the GeoJSON
+    missing_provs = input_df[~input_df[input_id].isin([feature['properties']['state'].lower() for feature in geojson_data['features']])]
+    print("Missing Provinces:", missing_provs)
+    
     # Membuat choropleth map menggunakan Plotly Express
     choropleth = px.choropleth(input_df, 
                                 geojson=geojson_data,  # Menggunakan data GeoJSON lokal
@@ -39,13 +46,12 @@ def make_choropleth(input_df, input_id, input_column, input_color_theme):
     # Memperbarui layout untuk peta
     choropleth.update_geos(fitbounds="locations", visible=False)
     choropleth.update_layout(
-    template='plotly_dark',
-    plot_bgcolor='rgba(255, 255, 255, 0)',  # Latar belakang peta yang transparan
-    paper_bgcolor='rgba(255, 255, 255, 0)',  # Latar belakang kertas yang transparan
-    margin=dict(l=0, r=0, t=0, b=0),
-    height=350
-)
-
+        template='plotly_dark',
+        plot_bgcolor='rgba(255, 255, 255, 0)',  # Latar belakang peta yang transparan
+        paper_bgcolor='rgba(255, 255, 255, 0)',  # Latar belakang kertas yang transparan
+        margin=dict(l=0, r=0, t=0, b=0),
+        height=350
+    )
     
     return choropleth
 
