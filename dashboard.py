@@ -78,7 +78,7 @@ plt.title('Pagu APBN 2023 per Provinsi')
 plt.xlim(left=0)
 plt.tight_layout()
 
-# st.pyplot(plt)
+st.pyplot(plt)
 
 fig = make_choropleth(all_df, 'PROVINSI', 'Jumlah Sekolah SD', 'Viridis')
-st.pyplot(fig)
+st.plotly_chart(fig)
