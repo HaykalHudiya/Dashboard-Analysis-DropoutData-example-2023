@@ -56,7 +56,7 @@ def display_map(df):
 #     fill_opacity=0.7,
 #     line_opacity=0.2,
 #     legend_name="Jumlah Sekolah SD"
-)
+# )
 
     # Menambahkan informasi tambahan pada setiap provinsi di GeoJSON
     df_indexed = df.set_index('PROVINSI')  # Indeks menggunakan 'PROVINSI' untuk pencocokan
