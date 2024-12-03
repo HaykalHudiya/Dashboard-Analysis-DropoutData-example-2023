@@ -27,6 +27,7 @@ def display_map(df):
     
     # Membaca GeoJSON dari file lokal
     geojson_url = 'indonesia-edit.geojson'
+    all_df['PROVINSI'] = all_df['PROVINSI'].str.lower()
 
     # Membuat Choropleth Map untuk peta Indonesia
     choropleth = folium.Choropleth(
@@ -40,6 +41,22 @@ def display_map(df):
         legend_name='Jumlah Sekolah SD'
     )
     choropleth.geojson.add_to(map)
+
+    geojson_url = 'indonesia-edit.geojson'
+
+# m = folium.Map(location=[-6.1751, 106.8650], zoom_start=5)
+
+
+# folium.Choropleth(
+#     geo_data=geojson_url,
+#     data=all_df,
+#     columns=['PROVINSI', 'Jumlah Sekolah SD'],
+#     key_on="feature.properties.state", 
+#     fill_color="YlGnBu",
+#     fill_opacity=0.7,
+#     line_opacity=0.2,
+#     legend_name="Jumlah Sekolah SD"
+)
 
     # Menambahkan informasi tambahan pada setiap provinsi di GeoJSON
     df_indexed = df.set_index('PROVINSI')  # Indeks menggunakan 'PROVINSI' untuk pencocokan
@@ -98,21 +115,21 @@ plt.title('Pagu APBN 2023 per Provinsi')
 plt.tight_layout()
 st.pyplot(plt)
 
-geojson_url = 'indonesia-edit.geojson'
+# geojson_url = 'indonesia-edit.geojson'
 
-m = folium.Map(location=[-6.1751, 106.8650], zoom_start=5)
-all_df['PROVINSI'] = all_df['PROVINSI'].str.lower()
+# m = folium.Map(location=[-6.1751, 106.8650], zoom_start=5)
+# all_df['PROVINSI'] = all_df['PROVINSI'].str.lower()
 
-folium.Choropleth(
-    geo_data=geojson_url,
-    data=all_df,
-    columns=['PROVINSI', 'Jumlah Sekolah SD'],
-    key_on="feature.properties.state", 
-    fill_color="YlGnBu",
-    fill_opacity=0.7,
-    line_opacity=0.2,
-    legend_name="Jumlah Sekolah SD"
-)
+# folium.Choropleth(
+#     geo_data=geojson_url,
+#     data=all_df,
+#     columns=['PROVINSI', 'Jumlah Sekolah SD'],
+#     key_on="feature.properties.state", 
+#     fill_color="YlGnBu",
+#     fill_opacity=0.7,
+#     line_opacity=0.2,
+#     legend_name="Jumlah Sekolah SD"
+# )
  
 state_name = display_map(all_df)
 st.write(f'Provinsi yang dipilih: {state_name}')
