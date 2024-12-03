@@ -13,8 +13,6 @@ import seaborn as sns
 import streamlit as st
 import json
 import folium
-from folium import Choropleth
-from folium.plugins import HeatMap
 from streamlit_folium import st_folium
 from babel.numbers import format_currency
 # sns.set(style='dark')
