@@ -35,8 +35,8 @@ def display_map(df):
         data=df,
         columns=['PROVINSI', 'Jumlah Sekolah SD'],  # Menyesuaikan dengan kolom di DataFrame
         key_on='feature.properties.state',  # Menyesuaikan dengan properti GeoJSON 'state'
-        fill_color='YlGnBu',
-        fill_opacity=1.0,
+        fill_color='Viridis',
+        fill_opacity=0.7,
         line_opacity=0.2,
         legend_name='Jumlah Sekolah SD'
     )
