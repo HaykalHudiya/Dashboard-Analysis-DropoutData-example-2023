@@ -5,3 +5,5 @@ matplotlib-inline==0.1.7
 matplotlib-venn==1.1.1
 pandas==2.2.2
 babel==2.16.0
+plotly==5.24.1
+plotnine==0.14.1
