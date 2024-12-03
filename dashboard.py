@@ -49,4 +49,5 @@ plt.ylabel('Provinsi')
 plt.title('Pagu APBN 2023 per Provinsi')
 plt.xlim(left=0)
 plt.tight_layout()
-plt.show()
+
+st.pyplot(plt)
