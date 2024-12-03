@@ -13,6 +13,8 @@ import seaborn as sns
 import streamlit as st
 import json
 import folium
+import altair as alt
+import plotly.express as px
 from streamlit_folium import st_folium
 from babel.numbers import format_currency
 # sns.set(style='dark')
@@ -67,7 +69,48 @@ def display_map(df):
     
     return state_name
 
-
+# Donut chart
+def make_donut(input_response, input_text, input_color):
+  if input_color == 'blue':
+      chart_color = ['#29b5e8', '#155F7A']
+  if input_color == 'green':
+      chart_color = ['#27AE60', '#12783D']
+  if input_color == 'orange':
+      chart_color = ['#F39C12', '#875A12']
+  if input_color == 'red':
+      chart_color = ['#E74C3C', '#781F16']
+    
+  source = pd.DataFrame({
+      "Topic": ['', input_text],
+      "% value": [1000-input_response, input_response]
+  })
+  source_bg = pd.DataFrame({
+      "Topic": ['', input_text],
+      "% value": [1000, 0]
+  })
+    
+  plot = alt.Chart(source).mark_arc(innerRadius=45, cornerRadius=25).encode(
+      theta="% value",
+      color= alt.Color("Topic:N",
+                      scale=alt.Scale(
+                          #domain=['A', 'B'],
+                          domain=[input_text, ''],
+                          # range=['#29b5e8', '#155F7A']),  # 31333F
+                          range=chart_color),
+                      legend=None),
+  ).properties(width=130, height=130)
+    
+  text = plot.mark_text(align='center', color="#29b5e8", font="Lato", fontSize=32, fontWeight=700, fontStyle="italic").encode(text=alt.value(f'{input_response} %'))
+  plot_bg = alt.Chart(source_bg).mark_arc(innerRadius=45, cornerRadius=20).encode(
+      theta="% value",
+      color= alt.Color("Topic:N",
+                      scale=alt.Scale(
+                          # domain=['A', 'B'],
+                          domain=[input_text, ''],
+                          range=chart_color),  # 31333F
+                      legend=None),
+  ).properties(width=130, height=130)
+  return plot_bg + plot + text
 
 # menyiapkan data all_data
 all_df = pd.read_csv('data_set_2023.csv')
@@ -94,12 +137,22 @@ with col2:
     st.metric("Total PAGU", value=total_pagu_formatted)
 
 plt.figure(figsize=(10, 8))
-plt.barh(filter_prov_df['PROVINSI'], filter_prov_df['PAGU'].astype(str).apply(lambda x: x[:-12]),   color=[ "#78B3CE" if pagu == filter_prov_df['PAGU'].max() else "#C9E6F0" for pagu in filter_prov_df['PAGU']])
+plt.barh(filter_prov_df['PROVINSI'], filter_prov_df['PAGU'].astype(str).apply(lambda x: x[:-12]), color=[ "#78B3CE" if pagu == filter_prov_df['PAGU'].max() else "#C9E6F0" for pagu in filter_prov_df['PAGU']])
 plt.xlabel('PAGU (Triliun)')
 plt.ylabel('Provinsi')
 plt.title('Pagu APBN 2023 per Provinsi')
 plt.tight_layout()
 st.pyplot(plt)
- 
+
+
 state_name = display_map(all_df)
 st.write(f'Provinsi yang dipilih: {state_name}')
+
+datas = all_df.loc[all_df['PROVINSI'] == state_name, 'Jumlah Sekolah SD']
+donut_chart_less = make_donut(, 'Testo', 'red')
+
+    migrations_col = st.columns((0.2, 1, 0.2))
+    with migrations_col[1]:
+        st.write('Test')
+        st.altair_chart(donut_chart_less)
+
