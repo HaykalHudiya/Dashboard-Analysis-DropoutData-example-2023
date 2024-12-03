@@ -40,7 +40,7 @@ with col1:
 
 with col2:
     total_pagu = filter_prov_df['PAGU'].sum()
-    total_pagu_formatted = f"{total_pagu / 1e12:.1f} T" 
+    total_pagu_formatted = f"{int(total_pagu / 1e12)} T"
     st.metric("Total PAGU", value=total_pagu_formatted)
 
 plt.figure(figsize=(10, 6))
