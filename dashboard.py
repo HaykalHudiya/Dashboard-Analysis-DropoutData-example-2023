@@ -13,6 +13,7 @@ import seaborn as sns
 import streamlit as st
 import plotly.express as px
 import json
+import folium
 from babel.numbers import format_currency
 # sns.set(style='dark')
 
@@ -91,3 +92,23 @@ st.pyplot(plt)
 all_df['PROVINSI'] = all_df['PROVINSI'].str.lower()
 fig = make_choropleth(all_df, 'PROVINSI', 'Jumlah Sekolah SD', 'Viridis')
 st.plotly_chart(fig)
+# Membaca GeoJSON dari file lokal
+geojson_url = 'indonesia-edit.geojson'
+
+# Buat peta pusat Indonesia
+m = folium.Map(location=[-6.1751, 106.8650], zoom_start=5)
+
+# Tambahkan layer GeoJSON
+folium.Choropleth(
+    geo_data=geojson_url,
+    data=all_df,
+    columns=['PROVINSI', 'Jumlah Sekolah SD'],
+    key_on="feature.properties.name",  # Pastikan sesuai dengan nama di GeoJSON
+    fill_color="YlGnBu",
+    fill_opacity=0.7,
+    line_opacity=0.2,
+    legend_name="Jumlah Sekolah SD"
+).add_to(m)
+
+# Menampilkan peta
+m.save('index_map.html')
