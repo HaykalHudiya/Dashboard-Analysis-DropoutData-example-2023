@@ -44,8 +44,7 @@ def create_filter_prov_df(df):
 # Choropleth map
 def make_choropleth(input_df, input_id, input_column, input_color_theme):
     geojson_url = 'indonesia-edit.geojson';
-    input_id = input_id.str.lower()
-    choropleth = px.choropleth(input_df, locations=input_id, color=input_column, geojson=geojson_url,
+    choropleth = px.choropleth(input_df, locations=input_id.str.lower(), color=input_column, geojson=geojson_url,
                                color_continuous_scale=input_color_theme,
                                range_color=(0, input_df[input_column].max()),
                                scope="asia",
