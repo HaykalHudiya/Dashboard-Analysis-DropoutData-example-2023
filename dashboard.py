@@ -23,14 +23,24 @@ def create_filter_prov_df(df):
     filter_prov = df.sort_values(by="PAGU", ascending=True)
     return filter_prov
 
-def make_choropleth(input_df, input_id, input_column, input_color_theme):
-    geojson_url = 'indonesia-edit.geojson';
-    choropleth = px.choropleth(input_df, locations=input_df[input_id].str.lower(), color=input_column, geojson=geojson_url, featureidkey="properties.state",
-                               color_continuous_scale=input_color_theme,
-                               range_color=(0, input_df[input_column].max()),
-                               scope="asia",
-                               labels={input_column: input_column}
-                              )
+def make_choropleth(input_df, input_id_column, input_column, input_color_theme):
+    geojson_url = 'indonesia-edit.geojson'
+    
+    # Normalisasi nama lokasi
+    input_df[input_id_column] = input_df[input_id_column].str.lower().str.strip()
+    
+    choropleth = px.choropleth(
+        input_df,
+        locations=input_id_column,  # Kolom lokasi
+        geojson=geojson_url,
+        featureidkey="properties.state",  # Sesuaikan dengan GeoJSON
+        color=input_column,
+        color_continuous_scale=input_color_theme,
+        range_color=(0, input_df[input_column].max()),
+        scope="asia",
+        labels={input_column: input_column}
+    )
+    
     choropleth.update_layout(
         template='plotly_dark',
         plot_bgcolor='rgba(0, 0, 0, 0)',
