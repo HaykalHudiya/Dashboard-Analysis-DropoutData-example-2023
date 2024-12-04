@@ -181,7 +181,7 @@ plt.tight_layout()
 st.pyplot(plt)
 
 choropleth = make_choropleth(all_df, 'PROVINSI', 'Jumlah Sekolah SD', 'viridis')
-    st.plotly_chart(choropleth, use_container_width=True)
+st.plotly_chart(choropleth, use_container_width=True)
     
 # heatmap = make_heatmap(df_reshaped, 'year', 'states', 'population', selected_color_theme)
 #     st.altair_chart(heatmap, use_container_width=True)
